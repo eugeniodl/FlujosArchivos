@@ -10,83 +10,90 @@ namespace Archivos
             int opcion = 0;
             string valor = "";
 
+            string modelo = "";
+            double costo = 0;
+            Carro miCarro;
+
+            FileStream fs;
+
+            // Variables extra
+            int numero = 5;
+            bool acceso = false;
+            byte conteo = 120;
+
             Console.WriteLine("1) crear archivo, 2) leer archivo");
             valor = Console.ReadLine();
             opcion = Convert.ToInt32(valor);
 
-            if(opcion == 1)
+            switch (opcion)
             {
-                // Creamos el objeto Carro
-                string modelo = "";
-                double costo = 0;
+                case 1:
+                    // Creamos el objeto Carro
+                    Console.WriteLine("Dame el modelo");
+                    modelo = Console.ReadLine();
 
-                Console.WriteLine("Dame el modelo");
-                modelo = Console.ReadLine();
+                    Console.WriteLine("Dame el costo");
+                    valor = Console.ReadLine();
+                    costo = Convert.ToDouble(valor);
 
-                Console.WriteLine("Dame el costo");
-                valor = Console.ReadLine();
-                costo = Convert.ToDouble(valor);
+                    miCarro = new Carro(modelo, costo);
 
-                Carro miCarro = new Carro(modelo, costo);
+                    // Creamos el stream
+                    fs = new FileStream("MiArchivo.arc", FileMode.Create, FileAccess.Write, FileShare.None);
 
-                // Variables extra
-                int numero = 5;
-                bool acceso = false;
-                byte conteo = 120;
+                    // Creamos el escritor
+                    BinaryWriter writer = new BinaryWriter(fs);
 
-                // Creamos el stream
-                FileStream fs = new FileStream("MiArchivo.arc", FileMode.Create, FileAccess.Write, FileShare.None);
+                    writer.Write(miCarro.Modelo);
+                    writer.Write(miCarro.Costo);
 
-                // Creamos el escritor
-                BinaryWriter writer = new BinaryWriter(fs);
+                    // Escribimos las variables
+                    writer.Write(numero);
+                    writer.Write(acceso);
+                    writer.Write(conteo);
 
-                writer.Write(miCarro.Modelo);
-                writer.Write(miCarro.Costo);
+                    // Cerramos el stream
+                    fs.Close();
+                    break;
 
-                // Escribimos las variables
-                writer.Write(numero);
-                writer.Write(acceso);
-                writer.Write(conteo);
+                case 2:
+                    // Leemos el archivo
+                    Console.WriteLine("--- Leemos archivo ---");
 
-                // Cerramos el stream
-                fs.Close();
-            }
+                    // Creamos stream
+                    fs = new FileStream("MiArchivo.arc", FileMode.Open, FileAccess.Read, FileShare.None);
 
-            if(opcion == 2)
-            {
-                // Leemos el archivo
-                Console.WriteLine("--- Leemos archivo ---");
+                    // Creamos el lector
+                    BinaryReader lector = new BinaryReader(fs);
 
-                // Creamos stream
-                FileStream fs = new FileStream("MiArchivo.arc", FileMode.Open, FileAccess.Read, FileShare.None);
+                    // Leemos en el mismo orden que se escribió
+                    // tomando en cuenta el tipo
+                    modelo = "";
+                    costo = 0;
+                    numero = 0;
+                    acceso = true;
+                    conteo = 0;
 
-                // Creamos el lector
-                BinaryReader lector = new BinaryReader(fs);
+                    modelo = lector.ReadString();
+                    costo = lector.ReadDouble();
+                    miCarro = new Carro(modelo, costo);
 
-                // Leemos en el mismo orden que se escribió
-                // tomando en cuenta el tipo
-                string modelo = "";
-                double costo = 0;
-                int numero = 0;
-                bool acceso = true;
-                byte conteo = 0;
+                    numero = lector.ReadInt32();
+                    acceso = lector.ReadBoolean();
+                    conteo = lector.ReadByte();
 
-                modelo = lector.ReadString();
-                costo = lector.ReadDouble();
-                Carro miCarro = new Carro(modelo, costo);
+                    // Cerramos el stream
+                    fs.Close();
 
-                numero = lector.ReadInt32();
-                acceso = lector.ReadBoolean();
-                conteo = lector.ReadByte();
-
-                // Cerramos el stream
-                fs.Close();
-
-                // Imprimimos
-                miCarro.MuestraInformacion();
-                Console.WriteLine("número {0}", numero);
-                Console.WriteLine("acceso {0}", acceso);
-                Console.WriteLine("conteo {0}", conteo);
+                    // Imprimimos
+                    miCarro.MuestraInformacion();
+                    Console.WriteLine("número {0}", numero);
+                    Console.WriteLine("acceso {0}", acceso);
+                    Console.WriteLine("conteo {0}", conteo);
+                    break;
+                default:
+                    Console.WriteLine("Opción inválida");
+                    break;
             }
         }
     }
