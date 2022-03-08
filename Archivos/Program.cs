@@ -29,7 +29,7 @@ namespace Archivos
 
                 Carro miCarro = new Carro(modelo, costo);
 
-                // Variables extras
+                // Variables extra
                 int numero = 5;
                 bool acceso = false;
                 byte conteo = 120;
