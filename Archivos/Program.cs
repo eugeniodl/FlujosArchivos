@@ -21,7 +21,7 @@ namespace Archivos
             bool acceso = false;
             byte conteo = 120;
 
-            Console.WriteLine("1) crear archivo, 2) leer archivo");
+            Console.WriteLine("1) crear archivo\n2) leer archivo");
             valor = Console.ReadLine();
             opcion = Convert.ToInt32(valor);
 
